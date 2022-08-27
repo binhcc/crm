@@ -26,9 +26,7 @@ $(document).ready(function(){
     $('body').on('click','.btn-delete',function(){
         // Lấy thuộc tính role-id từ button được click
         var roleId = $(this).attr('role-id')
-        console.log(`Role id ${roleId}`)
-        // $(this).closest('tr').remove()
-        // location.reload()
+        var This = $(this)
 
         $.ajax({
             url: `http://localhost:8080/crm_war/api/role?id=${roleId}`, //Link lấy danh sách role
@@ -38,16 +36,45 @@ $(document).ready(function(){
             // },
             // dataType: "application/json"
         }).done(function(result){
-            console.log("kiemtra")
-            console.log(result)
             // Lấy thành công và trả ra kết quả
             if(result.isSuccess == true){
-                console.log("Xoá thành công !")
+                This.closest('tr').remove()
             }else{
                 console.log("Xoá thất bại !")
             }
-        })
+        })  
+    })
+
+    $('#btn-save-role').click(function(e){
+        e.preventDefault() //Chặn tất cả các sự kiện liên quan tới button
         
+        var dataRole = $('#role').val()
+        var dataDescription = $('#description').val()
+
+        $.ajax({
+            url: `http://localhost:8080/crm_war/api/role`, //Link lấy danh sách role
+            method: "POST", //Phương thức tương ứng với link
+            data: {
+                role: dataRole,
+                description: dataDescription
+            },
+            // dataType: "application/json"
+        }).done(function(result){
+            // Lấy thành công và trả ra kết quả
+            if(result.isSuccess == true){
+                $('#role').val("")
+                $('#description').val("")
+                $.toast({
+                    heading: 'Success',
+                    text: 'Thêm thành công.',
+                    showHideTransition: 'slide',
+                    position: 'top-center',
+                    icon: 'success'
+                })
+            }else{
+                console.log("Thêm thất bại !")
+            }
+        })
     })
 
 })
